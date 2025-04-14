@@ -32,4 +32,11 @@ export class UsersService {
 
     await this.userRepository.save(user);
   }
+
+  async getAllUsers(): Promise<Omit<UserEntity, 'senha'>[]> {
+    // Queria usar o `excludes` como o sequelize faz, mas não consegui fazer utilizando o typeorm
+    return this.userRepository.find({
+      select: ['id', 'nome', 'telefone', 'email'],
+    });
+  }
 }

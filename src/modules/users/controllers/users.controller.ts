@@ -12,6 +12,11 @@ export class UsersController {
     return { message: 'Usuário criado com sucesso!' };
   }
 
+  @Get()
+  async getAllUsers() {
+    return await this.userService.getAllUsers();
+  }
+
   //   @Get(':id')
   //   async getUserById(@Body() id: string) {
   //     return await this.userService.getUserById(id);
