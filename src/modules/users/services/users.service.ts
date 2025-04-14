@@ -4,6 +4,7 @@ import { UserEntity } from '../entities/user.entity';
 import { Repository } from 'typeorm';
 import { CreateUserDto } from '../dto/create-user.dto';
 import { hashPassword } from 'src/common/utils/hash-password.util';
+import { UserSearchCriteria } from '../@types/user-search.type';
 
 @Injectable()
 export class UsersService {
@@ -36,6 +37,13 @@ export class UsersService {
   async getAllUsers(): Promise<Omit<UserEntity, 'senha'>[]> {
     // Queria usar o `excludes` como o sequelize faz, mas não consegui fazer utilizando o typeorm
     return this.userRepository.find({
+      select: ['id', 'nome', 'telefone', 'email'],
+    });
+  }
+
+  async getUserBy(criteria: UserSearchCriteria): Promise<UserEntity | null> {
+    return this.userRepository.findOne({
+      where: criteria,
       select: ['id', 'nome', 'telefone', 'email'],
     });
   }

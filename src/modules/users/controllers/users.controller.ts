@@ -1,6 +1,17 @@
-import { Body, Controller, Delete, Get, Post, Put } from '@nestjs/common';
+import {
+  BadRequestException,
+  Body,
+  Controller,
+  Delete,
+  Get,
+  NotFoundException,
+  Param,
+  Post,
+  Put,
+} from '@nestjs/common';
 import { CreateUserDto } from '../dto/create-user.dto';
 import { UsersService } from '../services/users.service';
+import { isValidUUID } from 'src/common/validators/uuid.validator';
 
 @Controller('users')
 export class UsersController {
@@ -17,10 +28,20 @@ export class UsersController {
     return await this.userService.getAllUsers();
   }
 
-  //   @Get(':id')
-  //   async getUserById(@Body() id: string) {
-  //     return await this.userService.getUserById(id);
-  //   }
+  @Get(':id')
+  async getUserById(@Param('id') id: string) {
+    if (!isValidUUID(id)) {
+      throw new BadRequestException('Formato de UUID inválido.');
+    }
+
+    const user = await this.userService.getUserBy({ id });
+
+    if (!user) {
+      throw new NotFoundException('Usuário não encontrado!');
+    }
+
+    return user;
+  }
 
   //   @Put(':id')
   //   async updateUser(@Body() id: string, @Body() updateUserDto: CreateUserDto) {
