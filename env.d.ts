@@ -8,6 +8,7 @@ declare global {
       DB_USERNAME: string;
       DB_PASSWORD: string;
       DB_DATABASE: string;
+      DB_SYNCHRONIZE: string;
 
       MAIL_HOST: string;
       MAIL_PORT: string;

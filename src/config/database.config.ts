@@ -12,6 +12,5 @@ export const databaseConfig = (
   database: configService.get('DATABASE_NAME'),
   entities: [__dirname + '/../modules/**/entities/*.entity{.ts,.js}'],
 
-  // Ativado temporariamente em desenvolvimento, não considero boa prática deixar isso ativado
-  synchronize: true,
+  synchronize: configService.get('DATABASE_SYNCHRONIZE') === 'true',
 });
