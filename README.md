@@ -1,98 +1,97 @@
-<p align="center">
-  <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="120" alt="Nest Logo" /></a>
-</p>
+# 📘 API de Gerenciamento de Usuários - NestJS
 
-[circleci-image]: https://img.shields.io/circleci/build/github/nestjs/nest/master?token=abc123def456
-[circleci-url]: https://circleci.com/gh/nestjs/nest
+Este projeto é uma API RESTful desenvolvida com **NestJS** para gerenciamento de usuários, contendo operações de **CRUD** e envio de **e-mails de boas-vindas**.
 
-  <p align="center">A progressive <a href="http://nodejs.org" target="_blank">Node.js</a> framework for building efficient and scalable server-side applications.</p>
-    <p align="center">
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/v/@nestjs/core.svg" alt="NPM Version" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/l/@nestjs/core.svg" alt="Package License" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/dm/@nestjs/common.svg" alt="NPM Downloads" /></a>
-<a href="https://circleci.com/gh/nestjs/nest" target="_blank"><img src="https://img.shields.io/circleci/build/github/nestjs/nest/master" alt="CircleCI" /></a>
-<a href="https://discord.gg/G7Qnnhy" target="_blank"><img src="https://img.shields.io/badge/discord-online-brightgreen.svg" alt="Discord"/></a>
-<a href="https://opencollective.com/nest#backer" target="_blank"><img src="https://opencollective.com/nest/backers/badge.svg" alt="Backers on Open Collective" /></a>
-<a href="https://opencollective.com/nest#sponsor" target="_blank"><img src="https://opencollective.com/nest/sponsors/badge.svg" alt="Sponsors on Open Collective" /></a>
-  <a href="https://paypal.me/kamilmysliwiec" target="_blank"><img src="https://img.shields.io/badge/Donate-PayPal-ff3f59.svg" alt="Donate us"/></a>
-    <a href="https://opencollective.com/nest#sponsor"  target="_blank"><img src="https://img.shields.io/badge/Support%20us-Open%20Collective-41B883.svg" alt="Support us"></a>
-  <a href="https://twitter.com/nestframework" target="_blank"><img src="https://img.shields.io/twitter/follow/nestframework.svg?style=social&label=Follow" alt="Follow us on Twitter"></a>
-</p>
-  <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
-  [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
+## 🚀 Funcionalidades
 
-## Description
+- Criar, buscar, atualizar e remover usuários.
+- Validações de entrada com `class-validator`.
+- Criptografia de senha com `bcrypt`.
+- Envio de e-mail de boas-vindas ao cadastrar usuário com `@nestjs-modules/mailer` e `nodemailer`.
 
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
+---
 
-## Project setup
+## 🧱 Estrutura da Entidade `User`
+
+| Campo      | Tipo   | Regras                     |
+| ---------- | ------ | -------------------------- |
+| `nome`     | string | Obrigatório                |
+| `telefone` | string | Obrigatório, único         |
+| `email`    | string | Obrigatório, único         |
+| `senha`    | string | Obrigatório, criptografado |
+
+---
+
+## 📡 Endpoints
+
+### ➕ `POST /users` - Criar usuário
+
+- **Regras**:
+
+  - E-mail e telefone devem ser únicos.
+  - Senha é criptografada com bcrypt.
+  - Envio de e-mail de boas-vindas após criação.
+
+- **Validações**:
+  - `409 Conflict`: e-mail ou telefone já existentes.
+  - `500 Internal Server Error`: erro no banco de dados.
+  - `200 OK`: usuário criado com sucesso.
+
+### 📧 Envio de E-mail de Boas-vindas
+
+- **Assunto**: `Bem-vindo ao sistema!`
+- **Corpo**: Nome do usuário + mensagem amigável.
+- **Erro no envio**:
+  - Usuário ainda será criado.
+  - O erro será logado.
+  - A resposta indicará que o e-mail não foi enviado.
+
+### 🔍 `GET /users/:id` - Buscar usuário por ID
+
+- **Validações**:
+  - `404 Not Found`: usuário não encontrado.
+  - `200 OK`: retorna dados do usuário.
+
+### ✏️ `PUT /users/:id` - Atualizar usuário
+
+- **Regras**:
+
+  - Pode atualizar: nome, telefone, email, senha.
+  - Senha continua criptografada.
+  - E-mail e telefone devem continuar únicos.
+
+- **Validações**:
+  - `404 Not Found`: usuário não encontrado.
+  - `409 Conflict`: e-mail ou telefone já utilizados.
+  - `500 Internal Server Error`: erro ao atualizar.
+  - `200 OK`: retorna dados atualizados.
+
+### ❌ `DELETE /users/:id` - Remover usuário
+
+- **Validações**:
+  - `404 Not Found`: usuário não encontrado.
+  - `500 Internal Server Error`: erro ao remover.
+  - `200 OK`: confirmação de remoção.
+
+---
+
+## 🛠 Requisitos Técnicos
+
+- ✅ NestJS com estrutura de **Modules, Controllers, Services, DTOs**
+- ✅ ORM: **TypeORM** ou **Prisma**
+- ✅ **class-validator** para validações
+- ✅ **bcrypt** para criptografar senhas
+- ✅ **@nestjs-modules/mailer** + **nodemailer** para envio de e-mails
+- ✅ Tratamento de erros com **HTTP status apropriados**
+- ✅ Uso de **DTOs** para entrada e saída de dados
+
+---
+
+## ▶️ Como rodar o projeto
+
+1. **Clone o repositório**
 
 ```bash
-$ npm install
+git clone https://github.com/jorgemiguelbamaq/teste-gabriel-jordan.git
+cd teste-gabriel-jordan
 ```
-
-## Compile and run the project
-
-```bash
-# development
-$ npm run start
-
-# watch mode
-$ npm run start:dev
-
-# production mode
-$ npm run start:prod
-```
-
-## Run tests
-
-```bash
-# unit tests
-$ npm run test
-
-# e2e tests
-$ npm run test:e2e
-
-# test coverage
-$ npm run test:cov
-```
-
-## Deployment
-
-When you're ready to deploy your NestJS application to production, there are some key steps you can take to ensure it runs as efficiently as possible. Check out the [deployment documentation](https://docs.nestjs.com/deployment) for more information.
-
-If you are looking for a cloud-based platform to deploy your NestJS application, check out [Mau](https://mau.nestjs.com), our official platform for deploying NestJS applications on AWS. Mau makes deployment straightforward and fast, requiring just a few simple steps:
-
-```bash
-$ npm install -g @nestjs/mau
-$ mau deploy
-```
-
-With Mau, you can deploy your application in just a few clicks, allowing you to focus on building features rather than managing infrastructure.
-
-## Resources
-
-Check out a few resources that may come in handy when working with NestJS:
-
-- Visit the [NestJS Documentation](https://docs.nestjs.com) to learn more about the framework.
-- For questions and support, please visit our [Discord channel](https://discord.gg/G7Qnnhy).
-- To dive deeper and get more hands-on experience, check out our official video [courses](https://courses.nestjs.com/).
-- Deploy your application to AWS with the help of [NestJS Mau](https://mau.nestjs.com) in just a few clicks.
-- Visualize your application graph and interact with the NestJS application in real-time using [NestJS Devtools](https://devtools.nestjs.com).
-- Need help with your project (part-time to full-time)? Check out our official [enterprise support](https://enterprise.nestjs.com).
-- To stay in the loop and get updates, follow us on [X](https://x.com/nestframework) and [LinkedIn](https://linkedin.com/company/nestjs).
-- Looking for a job, or have a job to offer? Check out our official [Jobs board](https://jobs.nestjs.com).
-
-## Support
-
-Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
-
-## Stay in touch
-
-- Author - [Kamil Myśliwiec](https://twitter.com/kammysliwiec)
-- Website - [https://nestjs.com](https://nestjs.com/)
-- Twitter - [@nestframework](https://twitter.com/nestframework)
-
-## License
-
-Nest is [MIT licensed](https://github.com/nestjs/nest/blob/master/LICENSE).
