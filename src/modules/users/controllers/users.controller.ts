@@ -13,6 +13,8 @@ import { CreateUserDto } from '../dto/create-user.dto';
 import { UsersService } from '../services/users.service';
 import { UuidValidation } from 'src/common/decorators/uuid-vallidation.decorator';
 import { UpdateUserDto } from '../dto/update-user.dto';
+import { plainToInstance } from 'class-transformer';
+import { UserResponseDto } from '../dto/user-response.dto';
 
 @Controller('users')
 export class UsersController {
@@ -25,19 +27,20 @@ export class UsersController {
     if (result.emailFailed) {
       return {
         message: 'Usuário criado com sucesso, mas o envio do e-mail falhou.',
-        user: result.user,
+        user: plainToInstance(UserResponseDto, result.user),
       };
     }
 
     return {
       message: 'Usuário criado e e-mail de boas-vindas enviado com sucesso!',
-      user: result.user,
+      user: plainToInstance(UserResponseDto, result.user),
     };
   }
 
   @Get()
   async getAllUsers() {
-    return await this.userService.getAllUsers();
+    const users = await this.userService.getAllUsers();
+    return plainToInstance(UserResponseDto, users);
   }
 
   @Get(':id')
@@ -48,7 +51,7 @@ export class UsersController {
       throw new NotFoundException('Usuário não encontrado!');
     }
 
-    return user;
+    return plainToInstance(UserResponseDto, user);
   }
 
   @Put(':id')
@@ -66,7 +69,8 @@ export class UsersController {
         'Pelo menos um dos campos deve ser informado: nome, telefone, email ou senha.',
       );
     }
-    return await this.userService.updateUser(id, updateUserDto);
+    const user = await this.userService.updateUser(id, updateUserDto);
+    return plainToInstance(UserResponseDto, user);
   }
 
   @Delete(':id')

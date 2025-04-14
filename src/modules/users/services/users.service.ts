@@ -21,7 +21,7 @@ export class UsersService {
   ) {}
 
   async createUser(createUserDto: CreateUserDto): Promise<{
-    user: Omit<UserEntity, 'senha'>;
+    user: UserEntity;
     emailFailed: boolean;
   }> {
     const { nome, telefone, email, senha } = createUserDto;
@@ -52,24 +52,20 @@ export class UsersService {
     return { user, emailFailed: false };
   }
 
-  async getAllUsers(): Promise<Omit<UserEntity, 'senha'>[]> {
-    // Queria usar o `excludes` como o sequelize faz, mas não consegui fazer utilizando o typeorm
-    return this.userRepository.find({
-      select: ['id', 'nome', 'telefone', 'email'],
-    });
+  async getAllUsers(): Promise<UserEntity[]> {
+    return this.userRepository.find();
   }
 
   async getUserBy(criteria: UserSearchCriteria): Promise<UserEntity | null> {
     return this.userRepository.findOne({
       where: criteria,
-      select: ['id', 'nome', 'telefone', 'email'],
     });
   }
 
   async updateUser(
     id: string,
     updateUserDto: UpdateUserDto,
-  ): Promise<Omit<UserEntity, 'senha'>> {
+  ): Promise<UserEntity> {
     const user = await this.getUserBy({ id });
 
     if (!user) {
@@ -102,8 +98,7 @@ export class UsersService {
 
     const updatedUser = await this.userRepository.save(user);
 
-    const { senha: _, ...userWithoutPassword } = updatedUser;
-    return userWithoutPassword;
+    return updatedUser;
   }
 
   async deleteUser(id: string): Promise<void> {
