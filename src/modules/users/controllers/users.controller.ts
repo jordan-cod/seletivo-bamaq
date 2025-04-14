@@ -20,8 +20,19 @@ export class UsersController {
 
   @Post()
   async createUser(@Body() createUserDto: CreateUserDto) {
-    await this.userService.createUser(createUserDto);
-    return { message: 'Usuário criado com sucesso!' };
+    const result = await this.userService.createUser(createUserDto);
+
+    if (result.emailFailed) {
+      return {
+        message: 'Usuário criado com sucesso, mas o envio do e-mail falhou.',
+        user: result.user,
+      };
+    }
+
+    return {
+      message: 'Usuário criado e e-mail de boas-vindas enviado com sucesso!',
+      user: result.user,
+    };
   }
 
   @Get()

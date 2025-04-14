@@ -10,15 +10,20 @@ import { CreateUserDto } from '../dto/create-user.dto';
 import { hashPassword } from 'src/common/utils/hash-password.util';
 import { UserSearchCriteria } from '../@types/user-search.type';
 import { UpdateUserDto } from '../dto/update-user.dto';
+import { EmailService } from 'src/modules/email/services/email.service';
 
 @Injectable()
 export class UsersService {
   constructor(
     @InjectRepository(UserEntity)
     private readonly userRepository: Repository<UserEntity>,
+    private readonly emailService: EmailService,
   ) {}
 
-  async createUser(createUserDto: CreateUserDto): Promise<void> {
+  async createUser(createUserDto: CreateUserDto): Promise<{
+    user: Omit<UserEntity, 'senha'>;
+    emailFailed: boolean;
+  }> {
     const { nome, telefone, email, senha } = createUserDto;
 
     const userExists = await this.userRepository.findOne({
@@ -37,6 +42,14 @@ export class UsersService {
     });
 
     await this.userRepository.save(user);
+
+    const emailSent = await this.emailService.sendWelcomeEmail(nome, email);
+    if (!emailSent) {
+      console.warn(`Falha ao enviar e-mail para ${email}`);
+      return { user, emailFailed: true };
+    }
+
+    return { user, emailFailed: false };
   }
 
   async getAllUsers(): Promise<Omit<UserEntity, 'senha'>[]> {
