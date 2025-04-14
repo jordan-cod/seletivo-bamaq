@@ -44,9 +44,9 @@ export class UsersController {
   //     return await this.userService.updateUser(id, updateUserDto);
   //   }
 
-  //   @Delete(':id')
-  //   deleteUser(@Body() id: string) {
-  //     await this.userService.deleteUser(id);
-  //     return { message: 'Usuário deletado com sucesso!' };
-  //   }
+  @Delete(':id')
+  async deleteUser(@UuidValidation() id: string) {
+    await this.userService.deleteUser(id);
+    return { message: 'Usuário deletado com sucesso!' };
+  }
 }
