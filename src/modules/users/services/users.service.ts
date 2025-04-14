@@ -9,6 +9,7 @@ import { Repository } from 'typeorm';
 import { CreateUserDto } from '../dto/create-user.dto';
 import { hashPassword } from 'src/common/utils/hash-password.util';
 import { UserSearchCriteria } from '../@types/user-search.type';
+import { UpdateUserDto } from '../dto/update-user.dto';
 
 @Injectable()
 export class UsersService {
@@ -50,6 +51,46 @@ export class UsersService {
       where: criteria,
       select: ['id', 'nome', 'telefone', 'email'],
     });
+  }
+
+  async updateUser(
+    id: string,
+    updateUserDto: UpdateUserDto,
+  ): Promise<Omit<UserEntity, 'senha'>> {
+    const user = await this.getUserBy({ id });
+
+    if (!user) {
+      throw new NotFoundException('Usuário não encontrado!');
+    }
+    const { nome, telefone, email, senha } = updateUserDto;
+
+    if (email && email !== user.email) {
+      const existingEmail = await this.userRepository.findOne({
+        where: { email },
+      });
+      if (existingEmail) {
+        throw new ConflictException('Email já cadastrado.');
+      }
+    }
+
+    if (telefone && telefone !== user.telefone) {
+      const existingPhone = await this.userRepository.findOne({
+        where: { telefone },
+      });
+      if (existingPhone) {
+        throw new ConflictException('Telefone já cadastrado.');
+      }
+    }
+
+    if (nome) user.nome = nome;
+    if (telefone) user.telefone = telefone;
+    if (email) user.email = email;
+    if (senha) user.senha = await hashPassword(senha);
+
+    const updatedUser = await this.userRepository.save(user);
+
+    const { senha: _, ...userWithoutPassword } = updatedUser;
+    return userWithoutPassword;
   }
 
   async deleteUser(id: string): Promise<void> {
