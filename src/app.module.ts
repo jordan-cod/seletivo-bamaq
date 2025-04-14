@@ -3,6 +3,7 @@ import { HealthModule } from './modules/health/health.module';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { databaseConfig } from './config/database.config';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { UsersModule } from './modules/users/users.module';
 
 @Module({
   imports: [
@@ -13,6 +14,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
       useFactory: databaseConfig,
     }),
     HealthModule,
+    UsersModule,
   ],
   controllers: [],
   providers: [],
