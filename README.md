@@ -95,3 +95,44 @@ Este projeto é uma API RESTful desenvolvida com **NestJS** para gerenciamento d
 git clone https://github.com/jorgemiguelbamaq/teste-gabriel-jordan.git
 cd teste-gabriel-jordan
 ```
+
+2. **Instale as dependências**
+
+Certifique-se de ter o Node.js instalado. Depois, execute o seguinte comando para instalar as dependências:
+
+```bash
+npm install
+```
+
+3. **Configure as variáveis de ambiente**
+
+Copie o arquivo `.env.example` para `.env` e configure as variáveis de ambiente com as informações do seu banco de dados e mailer (se desejar, o acesso para o nodemailer já está configurado).
+
+4. **Inicie o servidor**
+
+Execute o seguinte comando para iniciar o servidor:
+
+```bash
+npm run start:dev
+```
+
+5. **Acesse o servidor**
+
+Acesse o servidor em `http://localhost:8080`
+
+## Mailer
+
+```bash
+MAIL_HOST=smtp.ethereal.email
+MAIL_PORT=587
+MAIL_USER=yvette.treutel99@ethereal.email
+MAIL_PASS=w8R6fzmzjEh8vWn7FN
+MAIL_FROM=no-reply@teste.com
+```
+
+Serviço de mailer de testes: [https://ethereal.email/login](https://ethereal.email/login)
+
+Credenciais de acesso:
+
+- Usuário: `yvette.treutel99@ethereal.email`
+- Senha: `w8R6fzmzjEh8vWn7FN`
