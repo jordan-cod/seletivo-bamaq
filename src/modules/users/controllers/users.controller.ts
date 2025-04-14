@@ -11,7 +11,7 @@ import {
 } from '@nestjs/common';
 import { CreateUserDto } from '../dto/create-user.dto';
 import { UsersService } from '../services/users.service';
-import { isValidUUID } from 'src/common/validators/uuid.validator';
+import { validate as isUuid } from 'uuid';
 
 @Controller('users')
 export class UsersController {
@@ -30,7 +30,7 @@ export class UsersController {
 
   @Get(':id')
   async getUserById(@Param('id') id: string) {
-    if (!isValidUUID(id)) {
+    if (!isUuid(id)) {
       throw new BadRequestException('Formato de UUID inválido.');
     }
 
